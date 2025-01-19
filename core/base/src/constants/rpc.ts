@@ -11,7 +11,7 @@ const rpcConfig = [[
     ["Polygon",   "https://rpc.ankr.com/polygon"],
     ["Bsc",       "https://bscrpc.com"],
     ["Avalanche", "https://rpc.ankr.com/avalanche"],
-    ["Fantom",    "https://rpc.ankr.com/fantom"],
+    ["Fantom",    "https://rpcapi.fantom.network"],
     ["Celo",      "https://rpc.ankr.com/celo"],
     ["Moonbeam",  "https://rpc.ankr.com/moonbeam"],
     ["Sui",       "https://rpc.mainnet.sui.io"],
@@ -54,7 +54,7 @@ const rpcConfig = [[
     ["Polygon",         "https://rpc-mumbai.polygon.technology"],
     ["Bsc",             "https://data-seed-prebsc-1-s3.binance.org:8545"],
     ["Avalanche",       "https://api.avax-test.network/ext/bc/C/rpc"],
-    ["Fantom",          "https://rpc.ankr.com/fantom_testnet"],
+    ["Fantom",          "https://rpc.testnet.fantom.network"],
     ["Celo",            "https://alfajores-forno.celo-testnet.org"],
     ["Solana",          "https://api.devnet.solana.com"],
     ["Oasis",           "https://testnet.emerald.oasis.io"],
@@ -84,6 +84,7 @@ const rpcConfig = [[
     ["Acala",           "https://eth-rpc-acala-testnet.aca-staging.network"],
     ["Blast",           "https://sepolia.blast.io"],
     ["Berachain",       "https://artio.rpc.berachain.com"],
+    ["Seievm",          "https://evm-rpc-testnet.sei-apis.com/"],
     ["Linea",           "https://rpc.sepolia.linea.build"],
     ["Xlayer",          "https://testrpc.xlayer.tech/"],
     ["Scroll",          "https://rpc.ankr.com/scroll_sepolia_testnet"],
@@ -95,6 +96,7 @@ const rpcConfig = [[
     ["Worldchain",      "https://worldchain-sepolia.g.alchemy.com/public"],
     ["Ink",             "https://rpc-qnd-sepolia.inkonchain.com"],
     ["HyperEVM",        "https://api.hyperliquid-testnet.xyz/evm"],
+    ["Monad",           ""], // TODO: No public rpc is currently available, override with a custom rpc for now.
     ["MonadDevnet",     ""], // TODO: No public rpc is currently available, override with a custom rpc for now.
     ["Noble",           "https://noble-testnet-rpc.polkachu.com/"],
   ]], [

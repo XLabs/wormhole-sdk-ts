@@ -108,6 +108,7 @@ const chainNetworkNativeChainIdEntries = [
       ["Mantle",          5003n], // Sepolia testnet
       ["Scroll",          534351n],
       ["Berachain",       80084n], // Testnet v2
+      ["Seievm",          1328n],
       ["Snaxchain",       13001n],
       ["Unichain",        1301n],
       ["Worldchain",      4801n],
@@ -115,6 +116,7 @@ const chainNetworkNativeChainIdEntries = [
       ["HyperEVM",        998n],
       ["Xlayer",          195n],
       ["Linea",           59141n], // Sepolia
+      ["Monad",           10143n],
       ["MonadDevnet",     41454n],
     ],
   ],

@@ -85,6 +85,7 @@ export const coreBridgeContracts = [[
     ["Scroll",          "0x055F47F1250012C6B20c436570a76e52c17Af2D5"],
     ["Blast",           "0x473e002D7add6fB67a4964F13bFd61280Ca46886"],
     ["Berachain",       "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
+    ["Seievm",          "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
     ["Snaxchain",       "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
     ["Unichain",        "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
     ["Worldchain",      "0xe5E02cD12B6FcA153b0d7fF4bF55730AE7B3C93A"],
@@ -92,6 +93,7 @@ export const coreBridgeContracts = [[
     ["HyperEVM",        "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
     ["Xlayer",          "0xA31aa3FDb7aF7Db93d18DDA4e19F811342EDF780"],
     ["Linea",           "0x79A1027a6A159502049F10906D333EC57E95F083"],
+    ["Monad",           "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
     ["MonadDevnet",     "0xBB73cB66C26740F31d1FabDC6b7A46a038A300dd"],
   ]], [
   "Devnet", [
