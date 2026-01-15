@@ -35,7 +35,7 @@ import {
   resolveWrappedToken,
   signSendWait,
 } from "./../../index.js";
-import type { ChainAddress, WormholeMessageId } from "@wormhole-foundation/sdk-definitions";
+import type { ChainAddress, VAA, WormholeMessageId } from "@wormhole-foundation/sdk-definitions";
 import type { RouteTransferRequest } from "../request.js";
 
 export const SLIPPAGE_BPS = 15n; // 0.15%
@@ -319,7 +319,7 @@ export class AutomaticPorticoRoute<N extends Network>
         state: TransferState.Attested,
         attestation: {
           id: msgId,
-          attestation: vaa,
+          attestation: vaa as VAA<"PorticoBridge:Transfer">,
         },
       } satisfies AttestedTransferReceipt<AttestationReceipt<"PorticoBridge">>;
 

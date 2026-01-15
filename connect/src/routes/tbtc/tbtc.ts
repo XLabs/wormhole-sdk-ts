@@ -8,6 +8,7 @@ import type {
   Signer,
   TokenId,
   TransactionId,
+  VAA,
   WormholeMessageId,
 } from "@wormhole-foundation/sdk-definitions";
 import {
@@ -254,7 +255,7 @@ export class TBTCRoute<N extends Network>
       const tb = await toChain.getTokenBridge();
       // This is really a TokenBridge:Transfer VAA
       const serialized = serialize(vaa);
-      const tbVaa = deserialize("TokenBridge:Transfer", serialized);
+      const tbVaa = deserialize("TokenBridge:Transfer", serialized) as VAA<"TokenBridge:Transfer">;
       xfer = tb.redeem(sender, tbVaa);
     }
 
@@ -288,7 +289,7 @@ export class TBTCRoute<N extends Network>
           emitter: vaa.emitterAddress,
           sequence: vaa.sequence,
         },
-        attestation: vaa,
+        attestation: vaa as VAA<"TBTCBridge:Transfer">,
       },
     } satisfies AttestedTransferReceipt<AttestationReceipt<"TBTCBridge">>;
   }
@@ -311,7 +312,7 @@ export class TBTCRoute<N extends Network>
         state: TransferState.Attested,
         attestation: {
           id: msgId,
-          attestation: vaa,
+          attestation: vaa as VAA<"TBTCBridge:Transfer">,
         },
       } satisfies AttestedTransferReceipt<AttestationReceipt<"TBTCBridge">>;
 

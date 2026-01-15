@@ -9,8 +9,9 @@ import {
 import type { ComposeLiteral, LayoutLiteral, LayoutOf, PayloadLiteral } from "./registration.js";
 import { composeLiteral, payloadFactory } from "./registration.js";
 
-import type { DistributiveVAA, LayoutLiteralToPayload, Payload, VAA } from "./vaa.js";
-import { baseLayout, decomposeLiteral, envelopeLayout, headerLayout } from "./vaa.js";
+import type { DistributiveVAA, LayoutLiteralToPayload, Payload, VAA, VAAHeader } from "./vaa.js";
+import { baseV2Layout, headerV2Layout, type DistributiveVAAV2, type VAAV2 } from "./vaaV2.js";
+import { baseLayout, decomposeLiteral, envelopeLayout, headerLayout as headerV1Layout  } from "./vaa.js";
 
 import { sequenceItem, universalAddressItem } from "../layout-items/index.js";
 import type { ProtocolName } from "../protocol.js";
@@ -45,9 +46,9 @@ export function payloadLiteralToPayloadItemLayout<PL extends PayloadLiteral>(pay
  * @returns a Uint8Array representation of the VAA
  * @throws if the VAA is not valid
  */
-export function serialize<PL extends PayloadLiteral>(vaa: VAA<PL>): Uint8Array {
+export function serialize<PL extends PayloadLiteral>(vaa: VAA<PL> | VAAV2<PL>): Uint8Array {
   const layout = [
-    ...baseLayout,
+    ...(vaa.version === 1 ? baseLayout : baseV2Layout), 
     payloadLiteralToPayloadItemLayout(vaa.payloadLiteral),
   ] as const satisfies Layout;
   return serializeLayout(layout, vaa as unknown as LayoutToType<typeof layout>);
@@ -162,16 +163,20 @@ type ExtractLiteral<T> = T extends PayloadDiscriminator<infer LL> ? LL : T;
 export function deserialize<T extends PayloadLiteral | PayloadDiscriminator>(
   payloadDet: T,
   data: Byteish,
-): DistributiveVAA<ExtractLiteral<T>> {
+): DistributiveVAA<ExtractLiteral<T>> | DistributiveVAAV2<ExtractLiteral<T>> {
   if (typeof data === "string") data = encoding.hex.decode(data);
 
+  const vaaVersion = data[0];
+  console.log("VAA Version:", vaaVersion);
+  const headerLayout = vaaVersion === 0x01 ? headerV1Layout : headerV2Layout;
   const [header, headerSize] = deserializeLayout(headerLayout, data, false);
 
   //ensure that guardian signature indicies are unique and in ascending order - see:
   //https://github.com/wormhole-foundation/wormhole/blob/8e0cf4c31f39b5ba06b0f6cdb6e690d3adf3d6a3/ethereum/contracts/Messages.sol#L121
-  for (let i = 1; i < header.signatures.length; ++i)
-    if (header.signatures[i]!.guardianIndex <= header.signatures[i - 1]!.guardianIndex)
-      throw new Error("Guardian signatures must be in ascending order of guardian set index");
+  if (vaaVersion === 0x01)
+    for (let i = 1; i < (header as VAAHeader).signatures.length; ++i)
+      if ((header as VAAHeader).signatures[i]!.guardianIndex <= (header as VAAHeader).signatures[i - 1]!.guardianIndex)
+        throw new Error("Guardian signatures must be in ascending order of guardian set index");
 
   const envelopeOffset = headerSize;
   const [envelope, envelopeSize] =
@@ -187,8 +192,7 @@ export function deserialize<T extends PayloadLiteral | PayloadDiscriminator>(
       : deserializePayload(payloadDet as PayloadDiscriminator, data.subarray(payloadOffset));
   const [protocolName, payloadName] = decomposeLiteral(payloadLiteral);
   const hash = keccak256(data.slice(envelopeOffset));
-
-  return {
+  const distributiveVAA = {
     protocolName,
     payloadName,
     payloadLiteral,
@@ -196,7 +200,12 @@ export function deserialize<T extends PayloadLiteral | PayloadDiscriminator>(
     ...envelope,
     payload,
     hash,
-  } satisfies VAA as DistributiveVAA<ExtractLiteral<T>>;
+  };
+
+  if (vaaVersion === 0x01)
+    return distributiveVAA as DistributiveVAA<ExtractLiteral<T>>;
+
+  return distributiveVAA as DistributiveVAAV2<ExtractLiteral<T>>;
 }
 
 type DeserializedPair<LL extends LayoutLiteral = LayoutLiteral> =
@@ -325,6 +334,8 @@ export const deserializeUnknownVaa = (data: Uint8Array) => {
     { name: "consistencyLevel", binary: "uint", size: 1 },
   ] as const satisfies Layout;
 
+  const vaaVersion = data[0];
+  const headerLayout = vaaVersion === 0x01 ? headerV1Layout : headerV2Layout;
   const [header, offset] = deserializeLayout(headerLayout, data, false);
   const [envelope, offset2] = deserializeLayout(envelopeLayout, data.subarray(offset), false);
 
