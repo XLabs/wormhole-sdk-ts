@@ -40,7 +40,7 @@ export class MockGuardians {
 
     const signers = this.signers.filter((signer) => guardianIndices.includes(signer.index));
 
-    const vaa = message instanceof Uint8Array ? deserialize("Uint8Array", message) : message;
+    const vaa = message instanceof Uint8Array ? deserialize("Uint8Array", message) as VAA<P> : message;
 
     if (vaa.guardianSet === 0)
       // @ts-expect-error -- wants readonly
@@ -64,7 +64,7 @@ export class MockGuardians {
   }
 
   setSignatures<P extends PayloadLiteral>(message: Uint8Array | VAA<P>) {
-    const vaa = message instanceof Uint8Array ? deserialize("Uint8Array", message) : message;
+    const vaa = message instanceof Uint8Array ? deserialize("Uint8Array", message) as VAA : message;
 
     // @ts-expect-error -- wants readonly
     vaa.signatures = [];

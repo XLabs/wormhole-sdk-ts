@@ -9,6 +9,7 @@ import {
   payloadDiscriminator,
 } from "./../src/vaa/index.js";
 import "../src/protocols/governance/index.js";
+import type { VAA } from "../src/vaa/index.js";
 
 //monkey-patch to allow stringifying BigInts
 (BigInt.prototype as any).toJSON = function () {
@@ -149,7 +150,7 @@ describe("WH Core governance VAA tests", function () {
     const rawvaa = deserialize("Uint8Array", guardianSetUpgrade);
     expect(governanceDiscriminator(rawvaa.payload)).toBe("WormholeCore:GuardianSetUpgrade");
     const payload = deserializePayload("WormholeCore:GuardianSetUpgrade", rawvaa.payload);
-    const vaa = deserialize("WormholeCore:GuardianSetUpgrade", guardianSetUpgrade);
+    const vaa = deserialize("WormholeCore:GuardianSetUpgrade", guardianSetUpgrade) as VAA<"WormholeCore:GuardianSetUpgrade">;
     expect(vaa.payload).toEqual(payload);
     expect(vaa.payloadLiteral).toBe("WormholeCore:GuardianSetUpgrade");
     expect(vaa.guardianSet).toBe(2);

@@ -25,6 +25,7 @@ import type {
   ExecutorTokenBridge,
   RelayInstructions,
   ChainAddress,
+  DistributiveVAA,
 } from "@wormhole-foundation/sdk-definitions";
 import {
   TokenBridge,
@@ -654,7 +655,7 @@ export namespace TokenTransfer {
     vaa: TokenTransfer.VAA,
   ): Promise<boolean> {
     if (vaa.protocolName === "AutomaticTokenBridge" || vaa.protocolName === "ExecutorTokenBridge") {
-      vaa = deserialize("TokenBridge:TransferWithPayload", serialize(vaa));
+      vaa = deserialize("TokenBridge:TransferWithPayload", serialize(vaa)) as DistributiveVAA<"TokenBridge:TransferWithPayload">; 
     }
     const tb = await toChain.getTokenBridge();
     return tb.isTransferCompleted(vaa);
@@ -686,16 +687,16 @@ export namespace TokenTransfer {
       const relayerAddress = tokenBridgeRelayer ? toUniversal(chain, tokenBridgeRelayer) : null;
       // If the target address is the relayer address, expect its an automatic token bridge vaa
       if (!!relayerAddress && address.equals(relayerAddress)) {
-        return deserialize("AutomaticTokenBridge:TransferWithRelay", serialize(vaa));
+        return deserialize("AutomaticTokenBridge:TransferWithRelay", serialize(vaa)) as DistributiveVAA<"AutomaticTokenBridge:TransferWithRelay">;
       }
 
       // We aren't checking the to address here since it could be different than what's hard-coded in the sdk
       try {
-        return deserialize("ExecutorTokenBridge:TransferWithExecutorRelay", serialize(vaa));
+        return deserialize("ExecutorTokenBridge:TransferWithExecutorRelay", serialize(vaa)) as DistributiveVAA<"ExecutorTokenBridge:TransferWithExecutorRelay">;
       } catch {}
     }
 
-    return vaa;
+    return vaa as TokenTransfer.VAA;
   }
 
   export async function isTransferEnqueued<N extends Network>(

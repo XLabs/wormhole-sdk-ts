@@ -534,7 +534,7 @@ export namespace GatewayTransfer {
   ): Promise<TokenBridge.TransferVAA> {
     const vaa = await wh.getVaa(whm, TokenBridge.getTransferDiscriminator(), timeout);
     if (!vaa) throw new Error(`No VAA Available: ${whm.chain}/${whm.emitter}/${whm.sequence}`);
-    return vaa;
+    return vaa as TokenBridge.TransferVAA;
   }
 
   export async function destinationOverrides<N extends Network>(

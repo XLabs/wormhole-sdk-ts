@@ -668,7 +668,7 @@ export namespace CircleTransfer {
       timeout,
     );
     if (!vaa) throw new Error(`No VAA available after timeout exhausted`);
-    return vaa;
+    return vaa as AutomaticCircleBridge.VAA;
   }
 
   export async function getTransferMessage<N extends Network>(
